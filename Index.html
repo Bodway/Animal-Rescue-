@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Rescue Game</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { background: #87CEEB; display: block; margin: auto; }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let car = { x: 400, y: 500, width: 50, height: 100 };
+        let animal = { x: Math.random() * 750, y: Math.random() * 500, width: 30, height: 30, rescued: false };
+        let hospital = { x: 700, y: 50, width: 80, height: 80 };
+
+        function drawCar() {
+            ctx.fillStyle = 'red';
+            ctx.fillRect(car.x, car.y, car.width, car.height);
+        }
+
+        function drawAnimal() {
+            if (!animal.rescued) {
+                ctx.fillStyle = 'brown';
+                ctx.fillRect(animal.x, animal.y, animal.width, animal.height);
+            }
+        }
+
+        function drawHospital() {
+            ctx.fillStyle = 'green';
+            ctx.fillRect(hospital.x, hospital.y, hospital.width, hospital.height);
+        }
+
+        function update() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCar();
+            drawAnimal();
+            drawHospital();
+            requestAnimationFrame(update);
+        }
+
+        function moveCar(e) {
+            if (e.key === 'ArrowUp') car.y -= 10;
+            if (e.key === 'ArrowDown') car.y += 10;
+            if (e.key === 'ArrowLeft') car.x -= 10;
+            if (e.key === 'ArrowRight') car.x += 10;
+
+            if (car.x < animal.x + animal.width && car.x + car.width > animal.x &&
+                car.y < animal.y + animal.height && car.y + car.height > animal.y) {
+                animal.rescued = true;
+            }
+
+            if (animal.rescued && car.x < hospital.x + hospital.width && car.x + car.width > hospital.x &&
+                car.y < hospital.y + hospital.height && car.y + car.height > hospital.y) {
+                alert('Animal rescued and taken to the hospital!');
+                animal.rescued = false;
+                animal.x = Math.random() * 750;
+                animal.y = Math.random() * 500;
+            }
+        }
+
+        window.addEventListener('keydown', moveCar);
+        update();
+    </script>
+</body>
+</html>
